@@ -20,17 +20,4 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# CORS Headers for Local Development
-<IfModule mod_headers.c>
-    # Handle preflight OPTIONS request
-    RewriteEngine On
-    RewriteCond %{REQUEST_METHOD} OPTIONS
-    RewriteRule ^(.*)$ $1 [R=200,L]
-    
-    # Set CORS headers for localhost development
-    Header always set Access-Control-Allow-Origin "*"
-    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-    Header always set Access-Control-Allow-Credentials "false"
-    Header always set Access-Control-Max-Age "86400"
-</IfModule>
+

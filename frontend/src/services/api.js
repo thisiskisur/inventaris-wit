@@ -1,7 +1,20 @@
 import axios from 'axios';
 
-// Use localhost for development
-const API_BASE_URL = 'http://localhost:8001/api';
+// Dynamically resolve API URL for XAMPP / Artisan Serve compatibility
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    const rawUrl = import.meta.env.VITE_API_URL.replace(/\/+$/, '');
+    return rawUrl.endsWith('/api') ? rawUrl : `${rawUrl}/api`;
+  }
+  // Check if running directly under XAMPP web server path
+  if (typeof window !== 'undefined' && window.location.pathname.includes('/Magang/Inventaris_WIT/')) {
+    return '/Magang/Inventaris_WIT/backend/public/api';
+  }
+  // Default to XAMPP public API endpoint (works with Apache without requiring artisan serve)
+  return 'http://localhost/Magang/Inventaris_WIT/backend/public/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -12,6 +25,7 @@ const api = axios.create({
   },
   withCredentials: false,
 });
+
 
 // Request interceptor to add auth token
 api.interceptors.request.use(

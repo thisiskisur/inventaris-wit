@@ -28,17 +28,13 @@ Route::get('/cors-test', function () {
     ]);
 });
 
-// CORS preflight routes
-Route::options('{any}', function () {
-    return response('', 200)
-        ->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers')
-        ->header('Access-Control-Allow-Credentials', 'false')
-        ->header('Access-Control-Max-Age', '86400');
-})->where('any', '.*');
-
 // Public routes
+
+Route::get('/login', function () {
+    return response()->json([
+        'message' => 'Login API aktif. Gunakan method POST dengan email dan password.',
+    ]);
+});
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 

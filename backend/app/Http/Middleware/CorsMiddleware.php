@@ -16,37 +16,38 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        $origin = $request->header('Origin');
+        $allowedOrigins = [
+            'http://localhost:5173',
+            'http://127.0.0.1:5173',
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'http://localhost:5174',
+            'http://127.0.0.1:5174',
+            'http://localhost:5175',
+            'http://127.0.0.1:5175',
+        ];
+        $allowOrigin = in_array($origin, $allowedOrigins) ? $origin : 'http://localhost:5173';
+
+        // Handle preflight OPTIONS request early
+        if ($request->isMethod('OPTIONS')) {
+            return response('', 200)
+                ->header('Access-Control-Allow-Origin', $allowOrigin)
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers')
+                ->header('Access-Control-Allow-Credentials', 'false')
+                ->header('Access-Control-Max-Age', '86400');
+        }
+
         $response = $next($request);
 
-        // Get the origin from the request
-        $origin = $request->header('Origin');
-        
-                        // Allow localhost origins for development
-                $allowedOrigins = [
-                    'http://localhost:5173',
-                    'http://localhost:3000',
-                    'http://localhost:5174',
-                    'http://localhost:5175'
-                ];
-
-                // Check if origin is allowed
-                if (in_array($origin, $allowedOrigins)) {
-                    $response->headers->set('Access-Control-Allow-Origin', $origin);
-                } else {
-                    $response->headers->set('Access-Control-Allow-Origin', '*');
-                }
-
+        $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
         $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
         $response->headers->set('Access-Control-Allow-Credentials', 'false');
         $response->headers->set('Access-Control-Max-Age', '86400');
 
-        // Handle preflight OPTIONS request
-        if ($request->isMethod('OPTIONS')) {
-            $response->setStatusCode(200);
-            $response->setContent('');
-        }
-
         return $response;
     }
+
 }
