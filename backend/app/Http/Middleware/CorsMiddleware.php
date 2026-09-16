@@ -18,6 +18,7 @@ class CorsMiddleware
     {
         $origin = $request->header('Origin');
         $allowedOrigins = [
+            'https://inventaris-wit.vercel.app',
             'http://localhost:5173',
             'http://127.0.0.1:5173',
             'http://localhost:3000',
@@ -27,7 +28,9 @@ class CorsMiddleware
             'http://localhost:5175',
             'http://127.0.0.1:5175',
         ];
-        $allowOrigin = in_array($origin, $allowedOrigins) ? $origin : 'http://localhost:5173';
+        $isAllowed = in_array($origin, $allowedOrigins) || ($origin && preg_match('/\.vercel\.app$/', parse_url($origin, PHP_URL_HOST) ?? ''));
+        $allowOrigin = $isAllowed ? $origin : 'https://inventaris-wit.vercel.app';
+
 
         // Handle preflight OPTIONS request early
         if ($request->isMethod('OPTIONS')) {

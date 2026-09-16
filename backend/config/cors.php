@@ -20,6 +20,7 @@ return [
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
     'allowed_origins' => [
+        'https://inventaris-wit.vercel.app',
         'http://localhost:5173',
         'http://127.0.0.1:5173',
         'http://localhost:3000',
@@ -29,6 +30,7 @@ return [
         'http://localhost:5175',
         'http://127.0.0.1:5175',
     ],
+
 
     'allowed_origins_patterns' => [],
 
